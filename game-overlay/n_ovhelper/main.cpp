@@ -144,11 +144,11 @@ bool safeInjectDll(DWORD pid, DWORD threadId, const std::wstring &dll)
     {
         if (!lib)
         {
-            std::wcout << L"LoadLibraryW failed:" << dll;
+            std::wcout << L"LoadLibraryW failed:" << dll << std::endl;
         }
         if (!user32)
         {
-            std::wcout << L"USER32 module not found:" << dll;
+            std::wcout << L"USER32 module not found:" << dll << std::endl;
         }
         return false;
     }
@@ -161,7 +161,7 @@ bool safeInjectDll(DWORD pid, DWORD threadId, const std::wstring &dll)
 
     if (!proc)
     {
-        std::wcout << L"GetProcAddress msg_hook_proc_ov failed";
+        std::wcout << L"GetProcAddress msg_hook_proc_ov failed" << std::endl;
         return false;
     }
 
@@ -172,20 +172,20 @@ bool safeInjectDll(DWORD pid, DWORD threadId, const std::wstring &dll)
     }
 
     std::wcout << "hook "
-               << "pid: " << pid << ", thread:" << threadId;
+               << "pid: " << pid << ", thread:" << threadId << std::endl;
 
     hook = set_windows_hook_ex(WH_GETMESSAGE, (HOOKPROC)proc, lib, threadId);
     if (!hook)
     {
         DWORD err = GetLastError();
-        std::wcout << L"SetWindowsHookEx failed: " << err;
+        std::wcout << L"SetWindowsHookEx failed: " << err << std::endl;
         return false;
     }
 
     for (auto i = 0; i < g_waitCount; i++)
     {
         Sleep(500);
-        std::wcout << L"PostThreadMessage to hook window";
+        std::wcout << L"PostThreadMessage to hook window" << std::endl;
 
         PostThreadMessage(threadId, WM_USER + 432, 0, (LPARAM)hook);
     }
@@ -202,7 +202,7 @@ bool startInject(DWORD pid, DWORD threadId, const std::wstring &dll)
         {
             succeed = true;
         }
-        std::wcout << L"safeInject, pid:" << pid << L", result:" << succeed;
+        std::wcout << L"safeInject, pid:" << pid << L", result:" << succeed << std::endl;
     }
 
     return succeed;

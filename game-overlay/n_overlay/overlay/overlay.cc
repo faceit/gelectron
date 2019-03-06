@@ -2,6 +2,7 @@
 #include "overlay.h"
 #include "hookapp.h"
 #include "hook/inputhook.h"
+#include <windowsx.h>
 
 const char k_overlayIpcName[] = "n_overlay_1a1y2o8l0b";
 
@@ -442,11 +443,11 @@ bool OverlayConnector::processMouseMessage(UINT message, WPARAM wParam, LPARAM l
    
     if (message == WM_MOUSEWHEEL)
     {
-        POINT gx = { 0, 0 };
-        ClientToScreen(session::graphicsWindow(), &gx);
+        POINT gx = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
+		ScreenToClient(session::graphicsWindow(), &gx);
 
-        mousePointInGameClient.x -= (SHORT)gx.x;
-        mousePointInGameClient.y -= (SHORT)gx.y;
+        mousePointInGameClient.x = gx.x;
+        mousePointInGameClient.y = gx.y;
     }
 
     if (mousePressWindowId_)
@@ -584,7 +585,6 @@ bool OverlayConnector::processMouseMessage(UINT message, WPARAM wParam, LPARAM l
             {
                 mousePressWindowId_ = 0;
             }
-
             if (directMessageInput_)
             {
                 if (message == WM_MOUSEWHEEL)
@@ -1267,22 +1267,23 @@ void OverlayConnector::_onWindowBounds(std::shared_ptr<overlay::WindowBounds>& o
 
 void OverlayConnector::_updateFrameBuffer(std::uint32_t windowId, const std::string &bufferName)
 {
-    try
-    {
-        windows_shared_memory share_mem(windows_shared_memory::open_only, bufferName.c_str(), windows_shared_memory::read_only);
+	try
+	{
+		windows_shared_memory share_mem(windows_shared_memory::open_only, bufferName.c_str(), windows_shared_memory::read_only);
 
-        Storm::ScopeLovkV1 lockShareMem(shareMemoryLock_);
+		Storm::ScopeLovkV1 lockShareMem(shareMemoryLock_);
 
-        char *orgin = static_cast<char *>(share_mem.get_address());
-        overlay::ShareMemFrameBuffer *head = (overlay::ShareMemFrameBuffer *)orgin;
-        int *mem = (int *)(orgin + sizeof(overlay::ShareMemFrameBuffer));
+		char *orgin = static_cast<char *>(share_mem.get_address());
+		overlay::ShareMemFrameBuffer *head = (overlay::ShareMemFrameBuffer *)orgin;
+		int *mem = (int *)(orgin + sizeof(overlay::ShareMemFrameBuffer));
 
-        std::shared_ptr<overlay_game::FrameBuffer> frameBuffer(new overlay_game::FrameBuffer(head->width, head->height, mem));
+		std::shared_ptr<overlay_game::FrameBuffer> frameBuffer(new overlay_game::FrameBuffer(head->width, head->height, mem));
 
-        std::lock_guard<std::mutex> lock(framesLock_);
-        frameBuffers_[windowId] = frameBuffer;
-
-        __trace__ << "window: " << windowId << ", width:" << head->width << ", height:" << head->height << std::endl;
+		std::lock_guard<std::mutex> lock(framesLock_);
+		frameBuffers_[windowId] = frameBuffer;
+#ifdef _DEBUG
+		__trace__ << "window: " << windowId << ", width:" << head->width << ", height:" << head->height << std::endl;
+#endif
     }
     catch (std::exception& e)
     {
