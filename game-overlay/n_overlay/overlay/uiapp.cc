@@ -5,6 +5,7 @@
 #include "hookapp.h"
 #include "hook/inputhook.h"
 #include "hotkey/hotkeycheck.h"
+#include <windowsx.h>
 
 #if ALLOW_ASSOC_SYSIME
 #pragma comment(lib, "imm32.lib")
@@ -380,25 +381,21 @@ LRESULT UiApp::hookGetMsgProc(_In_ int nCode, _In_ WPARAM wParam, _In_ LPARAM lP
                 if (pMsg->message >= WM_MOUSEFIRST && pMsg->message <= WM_MOUSELAST)
                 {
                     POINTS pt = MAKEPOINTS(pMsg->lParam);
-
-                    if (overlay_game::pointInRect(pt, windowClientRect_))
-                    {
 #if AUTO_INPUT_INTERCEPT
-                        if (!HookApp::instance()->overlayConnector()->processMouseMessage(pMsg->message, pMsg->wParam, pMsg->lParam, isIntercepting_))
+                    if (!HookApp::instance()->overlayConnector()->processMouseMessage(pMsg->message, pMsg->wParam, pMsg->lParam, isIntercepting_))
 #else
-                        if (!HookApp::instance()->overlayConnector()->processMouseMessage(pMsg->message, pMsg->wParam, pMsg->lParam))
+                    if (!HookApp::instance()->overlayConnector()->processMouseMessage(pMsg->message, pMsg->wParam, pMsg->lParam))
 #endif // AUTO_INPUT_INTERCEPT
 
+                    {
+                        if (pMsg->message == WM_LBUTTONUP
+                            || pMsg->message == WM_MBUTTONUP)
                         {
-                            if (pMsg->message == WM_LBUTTONUP
-                                || pMsg->message == WM_MBUTTONUP)
-                            {
-                                async([this]() { this->stopInputIntercept(); });
-                            }
+                            async([this]() { this->stopInputIntercept(); });
                         }
-                        pMsg->message = WM_NULL;
-                        return 0;
                     }
+                    pMsg->message = WM_NULL;
+                    return 0;
                 }
 
                 if ((pMsg->message >= WM_KEYFIRST && pMsg->message <= WM_KEYLAST)
@@ -495,7 +492,6 @@ LRESULT UiApp::hookCallWndRetProc(_In_ int nCode, _In_ WPARAM wParam, _In_ LPARA
     if (nCode >= 0)
     {
         CWPRETSTRUCT * cwp = (CWPRETSTRUCT *)lParam;
-
         if (cwp->hwnd == graphicsWindow_)
         {
             if (cwp->message == WM_SETCURSOR && LOWORD(cwp->lParam) == HTCLIENT)

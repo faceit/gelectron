@@ -7,7 +7,7 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "build": "node-gyp build",
         "compile": "node-gyp rebuild",
-        "compile:electron": "electron-rebuild -v 2.0.8"
+        "compile:electron": "electron-rebuild -v 3.0.15"
     },
     "keywords": [],
     "author": "",
@@ -16,5 +16,8 @@
         "electron-rebuild": "^1.8.2",
         "node-addon-api": "^1.4.0",
         "node-gyp": "^3.8.0"
+    },
+    "dependencies": {
+        "node-abi": "^2.7.1"
     }
 }
