@@ -1021,7 +1021,7 @@ void OverlayConnector::_onRemoteConnect()
 
     this->_sendGameProcessInfo();
 
-    this->remoteConnectEvent();
+    this->remoteConnectEvent().emit();
 }
 
 void OverlayConnector::_onRemoteClose()
