@@ -52,6 +52,7 @@ struct window_hook_info
 {
   HWND hwnd;
   std::wstring title;
+  std::wstring fileName;
   DWORD processId;
   DWORD threadId;
 };
@@ -132,6 +133,7 @@ static bool fill_window_info(window_hook_info &info, HWND hwnd)
   info.hwnd = hwnd;
   info.processId = processId;
   info.threadId = threadId;
+  info.fileName = wname;
 
   get_window_title(info.title, hwnd);
 
@@ -226,6 +228,7 @@ Napi::Value getTopWindows(const Napi::CallbackInfo &info)
     infoObject.Set("processId", Napi::Value::From(env, (std::uint32_t)info.processId));
     infoObject.Set("threadId", Napi::Value::From(env, (std::uint32_t)info.threadId));
     infoObject.Set("title", Napi::Value::From(env, win_utils::toUtf8(info.title)));
+    infoObject.Set("fileName", Napi::Value::From(env, win_utils::toUtf8(info.fileName)));
 
     arr.Set(i, infoObject);
   }

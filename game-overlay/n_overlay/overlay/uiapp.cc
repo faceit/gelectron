@@ -492,7 +492,6 @@ LRESULT UiApp::hookCallWndRetProc(_In_ int nCode, _In_ WPARAM wParam, _In_ LPARA
     if (nCode >= 0)
     {
         CWPRETSTRUCT * cwp = (CWPRETSTRUCT *)lParam;
-
         if (cwp->hwnd == graphicsWindow_)
         {
             if (cwp->message == WM_SETCURSOR && LOWORD(cwp->lParam) == HTCLIENT)

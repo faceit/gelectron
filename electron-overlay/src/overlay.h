@@ -308,7 +308,7 @@ inline std::vector<std::string> getMouseModifiers(WPARAM wparam, LPARAM lparam)
 
 class OverlayMain : public IIpcHost
 {
-    const std::string k_overlayIpcName = "n_overlay_1a1y2o8l0b";
+    const std::string k_overlayIpcName = "faceit_overlay";
 
     IIpcHostCenter *ipcHostCenter_;
     std::map<std::uint32_t, IIpcLink *> ipcClients_;
@@ -342,7 +342,7 @@ class OverlayMain : public IIpcHost
 
         static long long pid = GetCurrentProcessId();
         static long long time = GetTickCount();
-        std::wstring name(L"electron-overlay-sharemem-{4C4BD948-0F75-413F-9667-AC64A7944D8E}");
+        std::wstring name(L"faceit-overlay-sharemem-{0a8f0c25-90b7-44de-b03f-c3e074da5760}");
         name.append(std::to_wstring(pid)).append(L"-").append(std::to_wstring(time));
         shareMemMutex_ = Windows::toUtf8(name);
         mutex_.create(false, name.c_str());

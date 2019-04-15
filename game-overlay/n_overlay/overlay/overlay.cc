@@ -4,7 +4,7 @@
 #include "hook/inputhook.h"
 #include <windowsx.h>
 
-const char k_overlayIpcName[] = "n_overlay_1a1y2o8l0b";
+const char k_overlayIpcName[] = "faceit_overlay";
 
 
 static auto _syncDragResizeLeft = [&](auto& window, std::int32_t xdiff, std::int32_t /*ydiff*/) {

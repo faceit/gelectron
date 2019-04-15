@@ -1,7 +1,7 @@
 TEMPLATE = app
 
 CONFIG -= qt
-CONFIG += console
+#CONFIG += console
 
 CharacterSet=1
 
