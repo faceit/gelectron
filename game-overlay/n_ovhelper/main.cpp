@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 
-int g_waitCount = 20;
+int g_waitCount = 80;
 
 #ifndef MAKEULONGLONG
 #define MAKEULONGLONG(ldw, hdw) ((ULONGLONG(hdw) << 32) | ((ldw)&0xFFFFFFFF))
