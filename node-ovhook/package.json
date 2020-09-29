@@ -7,7 +7,7 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "build": "node-gyp build",
         "compile": "node-gyp rebuild",
-        "compile:electron": "electron-rebuild -v 3.0.15"
+        "compile:electron": "electron-rebuild -v 10.1.1"
     },
     "keywords": [],
     "author": "",
