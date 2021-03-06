@@ -135,7 +135,6 @@ D3d9Graphics::D3d9Graphics()
 
 D3d9Graphics::~D3d9Graphics()
 {
-    freeGraphics();
 }
 
 bool D3d9Graphics::isWindowed() const

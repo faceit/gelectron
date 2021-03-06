@@ -13,13 +13,21 @@ namespace Windows
         ComPtr(T* obj)
             : p_(obj)
         {
-            if (p_) p_->AddRef();
+            if (p_)
+            {
+                p_->AddRef();
+                _threadId = GetCurrentThreadId();
+            }
         }
 
         ComPtr(const ComPtr<T>& other)
             : p_(other.p_)
         {
-            if (p_) p_->AddRef();
+            if (p_)
+            {
+                p_->AddRef();
+                _threadId = GetCurrentThreadId();
+            }
         }
 
         ~ComPtr()
@@ -57,6 +65,7 @@ namespace Windows
             if (newP != nullptr)
             {
                 newP->AddRef();
+                _threadId = GetCurrentThreadId();
             }
             release();
             p_ = newP;
@@ -110,12 +119,16 @@ namespace Windows
         {
             if (p_ != nullptr)
             {
-                p_->Release();
+                if (GetCurrentThreadId() == _threadId)
+                {
+                    p_->Release();
+                }
                 p_ = nullptr;
             }
         }
 
         T** operator&();
+        DWORD _threadId;
     };
 
 
