@@ -5,9 +5,8 @@ class UiApp : public Storm::Trackable<>
 {
     std::uint32_t overlayMagicMsg_ =0;
     std::mutex uilock_;
-    HHOOK msgHook_ = nullptr;
-    HHOOK wndProcHook_ = nullptr;
-    HHOOK wndRetProcHook_ = nullptr;
+    WNDPROC oldWndProc_ = nullptr;
+
     std::atomic<HWND> graphicsWindow_ = false;
     std::atomic<bool> windowFocus_ = false;
     RECT windowClientRect_ = {};
@@ -69,13 +68,9 @@ public:
 
 private:
 
-    static LRESULT CALLBACK GetMsgProc(_In_ int nCode, _In_ WPARAM wParam, _In_ LPARAM lParam);
-    static LRESULT CALLBACK CallWndProc(_In_ int nCode, _In_ WPARAM wParam, _In_ LPARAM lParam);
-    static LRESULT CALLBACK CallWndRetProc(_In_ int nCode, _In_ WPARAM wParam, _In_ LPARAM lParam);
+    static LRESULT WINAPI WindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 
-    LRESULT hookGetMsgProc(_In_ int nCode, _In_ WPARAM wParam, _In_ LPARAM lParam);
-    LRESULT hookCallWndProc(_In_ int nCode, _In_ WPARAM wParam, _In_ LPARAM lParam);
-    LRESULT hookCallWndRetProc(_In_ int nCode, _In_ WPARAM wParam, _In_ LPARAM lParam);
+    LRESULT hookWindowProc(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 
     bool checkHotkey();
 
